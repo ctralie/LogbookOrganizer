@@ -18,7 +18,7 @@ class Logbook(object):
 				self.entries[datestr] = []
 			files = os.listdir('%s/%s'%(dirName, datestr))
 			#Could have used a regexp here lol
-			files = [f for f in files if (f.upper().rfind("ENTRY") > -1 and f.upper().rfind(".HTM") > -1)]
+			files = [f for f in files if (f.upper().rfind("ENTRY") > -1 and f.upper().rfind(".HTM") > -1) and f.rfind('~') == -1]
 			for f in files:
 				entry = LogbookEntry()
 				entry.initFromHTMLFile("%s/%s/%s"%(dirName, datestr, f))

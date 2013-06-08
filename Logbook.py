@@ -56,8 +56,9 @@ class Logbook(object):
 		fout.write('<html>\n<body>\n')
 		
 		tableout = StringIO.StringIO()
-		tableout.write('<table border = \'1\'\n')
+		tableout.write('<table border = \'1\'>\n')
 		entriesRevOrder = [x for x in self.entries]
+		entriesRevOrder.sort()
 		entriesRevOrder.reverse()
 		for datestr in entriesRevOrder:
 			self.writeDateEntryHTML(tableout, datestr)
@@ -78,27 +79,29 @@ class Logbook(object):
 		fout.write('</body>\n</html>\n')
 	
 	def generateTagHTMLPages(self):
-		for tag in self.tags:
-			fout = open('%s/%s.html'%(self.LogBookFolder, tag), 'w')
-			fout.write('<body>\n<html>\n<h1><center>Entries Tagged with <b><u>%s</u></b></h1>\n<h2><a href = \'index.html\'> <-- Back to all entries</a></h2></center>\n'%(tag))
-			fout.write('<table border = \'1\'\n');
-			entriesRevOrder = [x for x in self.entries]
-			entriesRevOrder.reverse()
+		entriesRevOrder = [x for x in self.entries]
+		entriesRevOrder.sort()
+		entriesRevOrder.reverse()
+		print entriesRevOrder
+		for thisTag in self.tags:
+			fout = open('%s/%s.html'%(self.LogBookFolder, thisTag), 'w')
+			fout.write('<body>\n<html>\n<h1><center>Entries Tagged with <b><u>%s</u></b></h1>\n<h2><a href = \'index.html\'> <-- Back to all entries</a></h2></center>\n'%(thisTag))
+			fout.write('<table border = \'1\'>\n');
 			for datestr in entriesRevOrder:
 				dateContainsTag = False
 				for entry in self.entries[datestr]:
-					if tag in entry.tags:
+					if thisTag in entry.tags:
 						dateContainsTag = True
 						break
 				if dateContainsTag:
 					self.writeDateEntryHTML(fout, datestr)
 					for entry in self.entries[datestr]:
-						if tag in entry.tags:
+						if thisTag in entry.tags:
 							self.writeSubEntryHTMLBegin(fout, entry)
 							for tag in entry.tags:
 								self.writeTagLinkHTML(fout, tag)
 							self.writeSubEntryHTMLEnd(fout)
-			fout.write('</table\n');
+			fout.write('</table>\n');
 			fout.write('</body>\n</html>\n')
 			fout.close()			
 	

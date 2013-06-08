@@ -1,6 +1,8 @@
 from LogbookEntry import *
 import os
 from sys import exit, argv
+import StringIO
+import datetime
 
 class Logbook(object):
 	#dirName is the directory that holds the folders with the logbook entries
@@ -10,7 +12,7 @@ class Logbook(object):
 		self.dirName = dirName
 		self.LogBookFolder = LogBookFolder
 		self.entries = {} #"date string" => [entry1, entry2, ...]
-		self.tags = set([])
+		self.tags = {}
 		for datestr in os.listdir(dirName):
 			if not datestr in self.entries:
 				self.entries[datestr] = []
@@ -23,7 +25,9 @@ class Logbook(object):
 				self.entries[datestr].append(entry)
 	
 	def writeDateEntryHTML(self, fout, datestr):
-		fout.write('<tr><td><a href = \'%s/%s\'>%s</a></td></tr>\n'%(self.dirName, datestr, datestr))		
+		ymd = [int(x) for x in datestr.split('-')]
+		date = datetime.date(ymd[0], ymd[1], ymd[2])
+		fout.write('<tr><td><h2><a href = \'%s/%s\'>%s</a></h2></td></tr>\n'%(self.dirName, datestr, date.strftime("%A %B %d, %Y")))		
 	
 	def writeSubEntryHTMLBegin(self, fout, entry):
 		fout.write('<tr><td><a href = \'%s/%s\'>%s</a></td><td>'%(self.dirName, entry.filename, entry.description))
@@ -31,32 +35,56 @@ class Logbook(object):
 	def writeSubEntryHTMLEnd(self, fout):
 		fout.write('</td></tr>\n')
 	
-	def writeTagLinkHTML(self, fout, tag):
-		fout.write('<a href = \'%s.html\'>%s</a> '%(tag, tag))
+	def writeTagLinkHTML(self, fout, tag, counts = -1):
+		if counts == -1:
+			fout.write('<a href = \'%s.html\'>%s</a> '%(tag, tag))
+		else:
+			fout.write('<a href = \'%s.html\'>%s (%i)</a> '%(tag, tag, counts))
+	
+	def writeTagCountsHTML(self, fout):
+		fout.write('<h2><b>Tags</b></h2>\n')
+		fout.write('<ul>\n')
+		for tag in self.tags:
+			fout.write('<li>')
+			self.writeTagLinkHTML(fout, tag, self.tags[tag])
+			fout.write('</li>\n')
+		fout.write('</ul>\n')
 	
 	#Writes out the main page as an HTML file and also fills in the 'tags' set
 	def generateMainpageHTML(self):
 		fout = open('%s/index.html'%self.LogBookFolder, 'w')
 		fout.write('<html>\n<body>\n')
-		fout.write('<table border = \'1\'\n');
-		for datestr in self.entries:
-			self.writeDateEntryHTML(fout, datestr)
+		
+		tableout = StringIO.StringIO()
+		tableout.write('<table border = \'1\'\n')
+		entriesRevOrder = [x for x in self.entries]
+		entriesRevOrder.reverse()
+		for datestr in entriesRevOrder:
+			self.writeDateEntryHTML(tableout, datestr)
 			for entry in self.entries[datestr]:
-				self.writeSubEntryHTMLBegin(fout, entry)
+				self.writeSubEntryHTMLBegin(tableout, entry)
 				for tag in entry.tags:
-					self.tags.add(tag)
-					self.writeTagLinkHTML(fout, tag)
-				self.writeSubEntryHTMLEnd(fout)
-		fout.write('</table>\n');
+					if not tag in self.tags:
+						self.tags[tag] = 0
+					self.tags[tag] = self.tags[tag]+1
+					self.writeTagLinkHTML(tableout, tag)
+				self.writeSubEntryHTMLEnd(tableout)
+		tableout.write('</table>\n');
+		tablestring = tableout.getvalue()
+		tableout.close()
+		
+		self.writeTagCountsHTML(fout)
+		fout.write(tablestring)
 		fout.write('</body>\n</html>\n')
-		fout.close()
 	
 	def generateTagHTMLPages(self):
 		for tag in self.tags:
 			fout = open('%s/%s.html'%(self.LogBookFolder, tag), 'w')
-			fout.write('<body>\n<html>\n<h1><center>Entries Tagged with <b>%s</b></h1>\n<h2><a href = \'index.html\'> <-- Back to all entries</a></h2></center>\n'%(tag))
+			fout.write('<body>\n<html>\n<h1><center>Entries Tagged with <b><u>%s</u></b></h1>\n<h2><a href = \'index.html\'> <-- Back to all entries</a></h2></center>\n'%(tag))
 			fout.write('<table border = \'1\'\n');
-			for datestr in self.entries:
+			entriesRevOrder = [x for x in self.entries]
+			entriesRevOrder.reverse()
+			for datestr in entriesRevOrder:
 				dateContainsTag = False
 				for entry in self.entries[datestr]:
 					if tag in entry.tags:
@@ -68,7 +96,6 @@ class Logbook(object):
 						if tag in entry.tags:
 							self.writeSubEntryHTMLBegin(fout, entry)
 							for tag in entry.tags:
-								self.tags.add(tag)
 								self.writeTagLinkHTML(fout, tag)
 							self.writeSubEntryHTMLEnd(fout)
 			fout.write('</table\n');

@@ -1,7 +1,7 @@
 
 class LogbookEntry(object):
 	def __init__(self):
-		self.datestr = "01_01_1969"
+		self.datestr = "01-01-1969"
 		self.date = [0, 0, 0]
 		self.description = "Description"
 		self.tags = []
@@ -10,7 +10,7 @@ class LogbookEntry(object):
 	def initFromHTMLFile(self, filename):
 		self.filename = filename
 		self.datestr = filename.split('/')[-2]
-		self.date = [int(x) for x in self.datestr.split('_')]
+		self.date = [int(x) for x in self.datestr.split('-')]
 		fin = open(filename, 'r')
 		#The first three lines are always
 		#<!--LOGBOOK ORGANIZER INFO

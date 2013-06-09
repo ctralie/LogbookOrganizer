@@ -14,6 +14,8 @@ class Logbook(object):
 		self.entries = {} #"date string" => [entry1, entry2, ...]
 		self.tags = {}
 		for datestr in os.listdir(dirName):
+			if datestr == "entry1.html":
+				continue #Skip over the template file
 			if not datestr in self.entries:
 				self.entries[datestr] = []
 			files = os.listdir('%s/%s'%(dirName, datestr))
@@ -44,7 +46,9 @@ class Logbook(object):
 	def writeTagCountsHTML(self, fout):
 		fout.write('<h2><b>Tags</b></h2>\n')
 		fout.write('<ul>\n')
-		for tag in self.tags:
+		tagList = [x for x in self.tags]
+		tagList.sort()
+		for tag in tagList:
 			fout.write('<li>')
 			self.writeTagLinkHTML(fout, tag, self.tags[tag])
 			fout.write('</li>\n')
@@ -82,7 +86,6 @@ class Logbook(object):
 		entriesRevOrder = [x for x in self.entries]
 		entriesRevOrder.sort()
 		entriesRevOrder.reverse()
-		print entriesRevOrder
 		for thisTag in self.tags:
 			fout = open('%s/%s.html'%(self.LogBookFolder, thisTag), 'w')
 			fout.write('<body>\n<html>\n<h1><center>Entries Tagged with <b><u>%s</u></b></h1>\n<h2><a href = \'index.html\'> <-- Back to all entries</a></h2></center>\n'%(thisTag))

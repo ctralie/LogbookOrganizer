@@ -20,19 +20,29 @@ class Logbook(object):
 				self.entries[datestr] = []
 			files = os.listdir('%s/%s'%(dirName, datestr))
 			#Could have used a regexp here lol
-			files = [f for f in files if (f.upper().rfind("ENTRY") > -1 and f.upper().rfind(".HTM") > -1) and f.rfind('~') == -1]
-			for f in files:
+			normalEntryFiles = [f for f in files if (f.upper().rfind("ENTRY") > -1 and f.upper().rfind(".HTM") > -1) and f.rfind('~') == -1]
+			for f in normalEntryFiles:
 				entry = LogbookEntry()
 				entry.initFromHTMLFile("%s/%s/%s"%(dirName, datestr, f))
 				self.entries[datestr].append(entry)
+			
+			files = os.listdir('%s/%s'%(dirName, datestr))
+			meetingEntryFiles = [f for f in files if (f.upper().rfind("MEETING") > -1 and f.upper().rfind(".TXT") > -1) and f.rfind('~') == -1]
+			for f in meetingEntryFiles:
+				entry = LogbookEntry()
+				entry.initMeetingFromTXTFile("%s/%s/%s"%(dirName, datestr, f))
+				self.entries[datestr].append(entry)				
 	
 	def writeDateEntryHTML(self, fout, datestr):
 		ymd = [int(x) for x in datestr.split('-')]
 		date = datetime.date(ymd[0], ymd[1], ymd[2])
-		fout.write('<tr><td><h2><a href = \'%s/%s\'>%s</a></h2></td></tr>\n'%(self.dirName, datestr, date.strftime("%A %B %d, %Y")))		
+		fout.write('<tr><td colspan = \"3\"><h2><a href = \'%s/%s\'>%s</a></h2></td></tr>\n'%(self.dirName, datestr, date.strftime("%A %B %d, %Y")))		
 	
 	def writeSubEntryHTMLBegin(self, fout, entry):
-		fout.write('<tr><td><a href = \'%s/%s\'>%s</a></td><td>'%(self.dirName, entry.filename, entry.description))
+		entryName = entry.filename.split("/")[-1]
+		entryName = entryName.split(".")[0]
+		entryName = entryName.upper()
+		fout.write('<tr><td><a href = \'%s/%s\'>%s</a></td><td>%s</td><td>'%(self.dirName, entry.filename, entryName, entry.description))
 	
 	def writeSubEntryHTMLEnd(self, fout):
 		fout.write('</td></tr>\n')

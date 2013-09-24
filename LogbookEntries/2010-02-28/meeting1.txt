@@ -1,0 +1,3 @@
+SampleMeeting.pdf
+Description: This entry shows an non-HTML type entry, the "meeting entry."  This entry links to a specific file instead of an HTML page.  If you click on the hyperlink for this date, you can go view the contents of the directory (as usual), which in this case will show you how I created the PDF file for the sample meeting
+Tags: SampleEntry, Meeting, Fun

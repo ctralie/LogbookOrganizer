@@ -13,9 +13,10 @@ class Logbook(object):
 		self.LogBookFolder = LogBookFolder
 		self.entries = {} #"date string" => [entry1, entry2, ...]
 		self.tags = {}
+		self.ignoreFiles = ["entry1.html", "SchoolsList.html"]
 		for datestr in os.listdir(dirName):
-			if datestr == "entry1.html":
-				continue #Skip over the template file
+			if datestr in self.ignoreFiles:
+				continue #Skip over any files that should be ignored
 			if not datestr in self.entries:
 				self.entries[datestr] = []
 			files = os.listdir('%s/%s'%(dirName, datestr))
@@ -42,7 +43,12 @@ class Logbook(object):
 		entryName = entry.filename.split("/")[-1]
 		entryName = entryName.split(".")[0]
 		entryName = entryName.upper()
-		fout.write('<tr><td><a href = \'%s/%s\'>%s</a></td><td>%s</td><td>'%(self.dirName, entry.filename, entryName, entry.description))
+		filename = ""
+		if entry.meetingFilename:
+			filename = "%s/%s/%s"%(self.dirName, entry.datestr, entry.meetingFilename)
+		else:
+			filename = "%s/%s"%(self.dirName, entry.filename)
+		fout.write('<tr><td><a href = \'%s\'>%s</a></td><td>%s</td><td>'%(filename, entryName, entry.description))
 	
 	def writeSubEntryHTMLEnd(self, fout):
 		fout.write('</td></tr>\n')

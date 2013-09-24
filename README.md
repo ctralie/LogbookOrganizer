@@ -10,6 +10,8 @@ Getting Started
 ---------------
 First download the script from Github, either using git clone or downloading the .zip file off of Github.
 
+Next make sure you have Python installed (which can be installed under Linux, Windows, and Mac and is beyond the scope of my tutorial).  You will need to execute a python script so you can either do that from the command line or double clicking on a file if your operating system recognizes .py files.
+
 Now note the directory structure (which should *NOT* be changed)
 * Logbook: This directory will store the main page (index.html) and all of the tag pages (every file in this folder is automatically generated).  Click on index.html in this folder to view the logbook.  The index.html page contains a list of tag hyperlinks at the top, and a table of entries below.  Each entry is under a date heading.  Clicking on the date hyperlink will bring you to the folder that contains all entries and files under that date.  Clicking on the entry hyperlink will bring you to the HTML page for that entry.
 

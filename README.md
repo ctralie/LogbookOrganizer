@@ -25,7 +25,7 @@ python Logbook.py
 
 Making a New Entry
 ------------------
-To create a new entry, you first need to create a new directory in the *LogbookEntries* directory which has the date of that entry.  The directory must be named as follows: `YYYY-MM-DD`.  So for example, if I had an entry on January 12, 2010, I would create the directory `2013-01-12`.
+To create a new entry, you first need to create a new directory in the *LogbookEntries* directory which has the date of that entry.  The directory must be named as follows: `YYYY-MM-DD`.  So for example, if I had an entry on January 12, 2010, I would create the directory `2010-01-12`.
 
 Once you have created the directory, you must create a file called *entry1.html* to represent the first entry on that date.  Subsequent entries on the same day can be called entry2.html, entry3.html, etc.  But they must all follow the convention entryX.html, starting with 1.  I usually start by copying the template file entry1.html into my new folder and editing that.
 

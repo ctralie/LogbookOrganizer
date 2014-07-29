@@ -3,6 +3,7 @@ import os
 from sys import exit, argv
 import StringIO
 import datetime
+import configFunctions
 
 class Logbook(object):
 	#dirName is the directory that holds the folders with the logbook entries
@@ -13,7 +14,7 @@ class Logbook(object):
 		self.LogBookFolder = LogBookFolder
 		self.entries = {} #"date string" => [entry1, entry2, ...]
 		self.tags = {}
-		self.ignoreFiles = ["entry1.html", "SchoolsList.html"]
+		self.ignoreFiles = configFunctions.getIgnoredFiles()
 		for datestr in os.listdir(dirName):
 			if datestr in self.ignoreFiles:
 				continue #Skip over any files that should be ignored

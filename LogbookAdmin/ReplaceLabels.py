@@ -3,11 +3,11 @@ import os
 from sys import exit, argv
 import StringIO
 import datetime
-
+import configFunctions
 
 def getFilenames(dirName = "../LogbookEntries", LogBookFolder = "../Logbook"):
 	filenames = []
-	ignoreFiles = ["entry1.html", "SchoolsList.html"]
+	ignoreFiles = configFunctions.getIgnoredFiles()
 	for datestr in os.listdir(dirName):
 		if datestr in ignoreFiles:
 			continue #Skip over any files that should be ignored

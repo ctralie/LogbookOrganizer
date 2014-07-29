@@ -3,6 +3,7 @@ import os
 from sys import exit, argv
 import StringIO
 import datetime
+import configFunctions
 
 #Note: This script requires the program "html2text" to be installed
 if __name__ == '__main__':
@@ -15,7 +16,7 @@ if __name__ == '__main__':
 	LogBookFolder = LogBookFolder
 	entries = {} #"date string" => [entry1, entry2, ...]
 	tags = {}
-	ignoreFiles = ["entry1.html", "SchoolsList.html"]
+	ignoreFiles = configFunctions.getIgnoredFiles()
 	os.popen3("touch logbookText.txt")
 	os.popen3("rm logbookText.txt")
 	for datestr in os.listdir(dirName):

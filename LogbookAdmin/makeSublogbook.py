@@ -22,12 +22,12 @@ def getFilenamesAndDirs(dirName = "../LogbookEntries", LogBookFolder = "../Logbo
     return filesdirs
 
 def executeCommand(command):
-    print command
+    print(command)
     subprocess.call(command)
 
 if __name__ == '__main__':
     if len(argv) < 3:
-        print "Usage: python makeSublogbook.py <tagName> <newDirectory>"
+        print("Usage: python makeSublogbook.py <tagName> <newDirectory>")
         exit(0)
     tagName = argv[1]
     copyLocDir = argv[2]

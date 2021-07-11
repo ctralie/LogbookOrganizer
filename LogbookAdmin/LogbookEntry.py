@@ -25,7 +25,7 @@ class LogbookEntry(object):
 			self.tags = [x.strip().upper() for x in tags.split(',')]
 			fin.close()
 		except Exception as e:
-			print "***Problem with %s\n%s***\n\n"%(filename, e)
+			print("***Problem with %s\n%s***\n\n"%(filename, e))
 			traceback.print_exc(file=sys.stdout)
 	
 	def initMeetingFromTXTFile(self, filename):
@@ -45,5 +45,5 @@ class LogbookEntry(object):
 			self.tags = [x.strip().upper() for x in tags.split(',')]
 			fin.close()
 		except Exception as e:
-			print "***Problem with %s\n%s***\n\n"%(filename, e)
+			print("***Problem with %s\n%s***\n\n"%(filename, e))
 			traceback.print_exc(file=sys.stdout)

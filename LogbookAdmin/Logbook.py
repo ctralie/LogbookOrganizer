@@ -1,9 +1,11 @@
 from LogbookEntry import *
 import os
 from sys import exit, argv
-import StringIO
+try:
+    import StringIO
+except ImportError:
+    from io import StringIO
 import datetime
-import configFunctions
 
 class Logbook(object):
 	#dirName is the directory that holds the folders with the logbook entries
@@ -14,7 +16,7 @@ class Logbook(object):
 		self.LogBookFolder = LogBookFolder
 		self.entries = {} #"date string" => [entry1, entry2, ...]
 		self.tags = {}
-		self.ignoreFiles = configFunctions.getIgnoredFiles()
+		self.ignoreFiles = ["entry1.html", "SchoolsList.html"]
 		for datestr in os.listdir(dirName):
 			if datestr in self.ignoreFiles:
 				continue #Skip over any files that should be ignored
@@ -36,9 +38,13 @@ class Logbook(object):
 				self.entries[datestr].append(entry)				
 	
 	def writeDateEntryHTML(self, fout, datestr):
-		ymd = [int(x) for x in datestr.split('-')]
-		date = datetime.date(ymd[0], ymd[1], ymd[2])
-		fout.write('<tr><td colspan = \"3\"><h2><a href = \'%s/%s\'>%s</a></h2></td></tr>\n'%(self.dirName, datestr, date.strftime("%A %B %d, %Y")))		
+	    try:
+		    ymd = [int(x) for x in datestr.split('-')]
+		    date = datetime.date(ymd[0], ymd[1], ymd[2])
+		    fout.write('<tr><td colspan = \"3\"><h2><a href = \'%s/%s\'>%s</a></h2></td></tr>\n'%(self.dirName, datestr, date.strftime("%A %B %d, %Y")))	
+	    except:
+	        print("Error on ", datestr)
+	        
 	
 	def writeSubEntryHTMLBegin(self, fout, entry):
 		entryName = entry.filename.split("/")[-1]
@@ -76,7 +82,7 @@ class Logbook(object):
 		fout = open('%s/index.html'%self.LogBookFolder, 'w')
 		fout.write('<html>\n<body>\n')
 		
-		tableout = StringIO.StringIO()
+		tableout = StringIO()
 		tableout.write('<table border = \'1\'>\n')
 		entriesRevOrder = [x for x in self.entries]
 		entriesRevOrder.sort()

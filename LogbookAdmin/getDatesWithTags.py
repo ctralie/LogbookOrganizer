@@ -16,11 +16,8 @@ if __name__ == '__main__':
 	entries = {} #"date string" => [entry1, entry2, ...]
 	tags = {}
 	ignoreFiles = ["entry1.html", "SchoolsList.html"]
-	ignoreTags = ["DHS", "Imager", "ImagerMeeting"]
-	for i in range(len(ignoreTags)):
-		ignoreTags[i] = ignoreTags[i].upper()
-	os.popen3("touch logbookText.txt")
-	os.popen3("rm logbookText.txt")
+	tagsToFind = [s.upper() for s in argv[1:]]
+	dates = set([])
 	for datestr in os.listdir(dirName):
 		if datestr in ignoreFiles:
 			continue #Skip over any files that should be ignored
@@ -42,15 +39,6 @@ if __name__ == '__main__':
 			fin.close()
 			doOutput = True
 			for tag in tags:
-				if tag.upper() in ignoreTags:
-					doOutput = False
-					print("Ignoring " + HTMLFilename)
-					break
-			if doOutput:
-				print("Writing " + HTMLFilename)
-				os.popen3("html2text %s >> logbookText.txt"%HTMLFilename)
-				fout = open('logbookText.txt', 'a')
-				fout.write("\n\n")
-				fout.write(description)
-				fout.close()
-	os.popen3("html2text ../Logbook/index.html >> logbookTextMain.txt")
+				if tag.upper() in tagsToFind:
+					dates.add(datestr)
+	print(dates)

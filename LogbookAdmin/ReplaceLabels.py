@@ -3,11 +3,11 @@ import os
 from sys import exit, argv
 import StringIO
 import datetime
-import configFunctions
+
 
 def getFilenames(dirName = "../LogbookEntries", LogBookFolder = "../Logbook"):
 	filenames = []
-	ignoreFiles = configFunctions.getIgnoredFiles()
+	ignoreFiles = ["entry1.html", "SchoolsList.html"]
 	for datestr in os.listdir(dirName):
 		if datestr in ignoreFiles:
 			continue #Skip over any files that should be ignored
@@ -21,7 +21,7 @@ def getFilenames(dirName = "../LogbookEntries", LogBookFolder = "../Logbook"):
 
 if __name__ == '__main__':
 	if len(argv) < 3:
-		print "Usage: python ReplaceLabels.py <currentName> <newName>"
+		print("Usage: python ReplaceLabels.py <currentName> <newName>")
 		exit(0)
 	currName = argv[1]
 	newName = argv[2]
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 				tagsLine = tagsLine + tags[i]
 			tagsLine = tagsLine + "\n"
 			lines[2] = tagsLine
-			print tagsLine
+			print(tagsLine)
 			fout = open(f, 'w')
 			for line in lines:
 				fout.write(line)

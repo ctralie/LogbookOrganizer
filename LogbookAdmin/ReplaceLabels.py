@@ -1,7 +1,6 @@
 from LogbookEntry import *
 import os
 from sys import exit, argv
-import StringIO
 import datetime
 
 
